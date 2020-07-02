@@ -1,0 +1,110 @@
+{% extends 'layout/application.html' %}
+
+{% block content %}
+{% load static %}
+  <link rel="stylesheet" type="text/css" src="{% static '/css/note.css' %}">
+  {% if notes %}
+    <div class="ui cards">
+      {% for note in notes %}
+        <div class="card" style="width: 100%; max-width: 270px;">
+          <div class="content" style="max-height: 47.16px;">
+            <div class="header">{{ note.from_user_id }}님</div>
+          </div>
+          <div class="content">
+            <h4 class="ui sub header">{{ note.arrived_date|date:'Y년 m월 d일 h시 i분'}}</h4>
+            <div class="ui small feed">
+              <div class="event">
+                <div class="content">
+                  <div class="summary">
+                    {{ note.note|linebreaksbr }}
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="extra content">
+            <button id="reply" class="ui primary button" data-from="{{ note.from_user_id }}">답장</button>
+            <button id="note_delete" class="ui button" data-id="{{ note.id }}">삭제</button>
+          </div>
+        </div>
+      {% endfor %}
+    </div>
+  {% else %}
+    <div class="ui floated message">{{ message }}</div>
+  {% endif %}
+
+  <!-- 쪽지 삭제 -->
+  <div class="ui tiny modal">
+    <div class="header">쪽지 삭제</div>
+    <div class="content">
+      <p>정말로 쪽지를 삭제하시겠습니까?</p>
+    </div>
+    <div class="actions">
+      <button type="button" class="ui negative button">취소</button>
+      <a type="button" id="delete" class="ui positive right labeled icon button">
+        <i class="checkmark icon"></i>삭제
+      </a>
+    </div>
+  </div>
+  <!-- 쪽지 전송 -->
+  <div class="ui small modal first coupled note">
+    <div class="header">쪽지 보내기</div>
+    <div class="content">
+      <div class="ui segment">
+        <div class="ui form">
+          <h4 class="ui dividing header">To. <span id="fromed_reply" name="fromed_reply"></span></h4>
+          <div class="field">
+            <textarea rows="5" name="note" id="note" placeholder="Note"></textarea>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="actions">
+      <button type="button" class="ui negative button">취소</button>
+      <button type="button" class="ui positive right labeled icon button" id="note_send">
+        <i class="checkmark icon"></i>전송
+      </button>
+    </div>
+  </div>
+  <div class="ui small modal second coupled note">
+    <div class="header">쪽지 보내기</div>
+    <div class="content">
+      <div class="description">
+        <p class="send_message"></p>
+      </div>
+    </div>
+    <div class="actions">
+      <button class="ui approve button" type="button"><i class="checkmark icon"></i>확인</button>
+    </div>
+  </div>
+  <script src="{% static '/js/note.js' %}"></script>
+  <script>
+    $("#note_delete").click(function () {
+        const from_id = $(this).attr('data-id');
+        const delete_url = '/{{ bloger.username }}/notebox/delete/' + from_id;
+        $("#delete").attr("href", delete_url);
+
+        $(".tiny.modal").modal('show');
+      });
+
+    $('#note_send').click(function() {
+      const author = $("#fromed_reply").text();
+      let note = $('#note').val();
+      $.ajax({
+        type: 'POST',
+        url: "/posts/note",
+        data: { 'author': author, 'note': note, 'csrfmiddlewaretoken': '{{ csrf_token }}' },
+        dataType: 'json',
+        success: function (response) {
+          // console.log(response.message)
+          $('.send_message').text("전송이 완료되었습니다!");
+        },
+        error: function (request, status, error) {
+          // console.log("로그인필요");
+          $('.send_message').text("전송 실패!")
+        },
+      })
+    });
+  </script>
+
+{% endblock content %}

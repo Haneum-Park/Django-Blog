@@ -1,0 +1,46 @@
+{% extends 'layout/application.html' %}
+
+{% block content %}
+
+{% if posts %}
+  <div class="ui segment">
+    <div class="ui segment">
+      <div class="ui divided items">
+        {% for post in posts %}
+          <div class="item">
+            {% comment %} 
+            <div class="image">
+              <img src="/images/wireframe/image.png">
+            </div> 
+            {% endcomment %}
+            <div class="content">
+              <a class="header" href="/{{ post.author_id }}/post/{{ post.category_id }}/{{ post.id }}/">{{ post.title }}</a>
+              <div class="description">
+                <p>
+                  {{ post.summary }}
+                  {% if post.summary|length >= 100 %}
+                  ...
+                  {% endif %}
+                </p>
+              </div>
+              {% comment %} <div class="extra">
+                
+              </div> {% endcomment %}
+              <div class="meta">
+                {{ post.created_at|date:'Y.m.j' }}
+                <div class="ui right floated">
+                  조회 수 : {{ post.views }} | <i class="like icon"></i><span id="count-{{ post.id }}">{{ post.likes_user.all.count }}<span>
+                </div>  
+              </div>
+            </div>
+          </div>
+        {% endfor %}
+      </div>
+    </div>
+  </div>
+{% else %}
+  <div class="ui floating message">{{ message }}</div>
+{% endif %}
+<a class="ui primary button right floated" href="/{{ bloger.username }}/new">글쓰기</a>
+
+{% endblock content %}

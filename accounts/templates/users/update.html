@@ -1,0 +1,53 @@
+{% extends 'layout/application.html' %}
+
+{% block content %}
+
+{% load static %}
+
+<div class="ui container">
+  <form method="POST" action="" class="ui form">
+    {% csrf_token %}
+    <div class="field">
+      <label for="username">사용자명(ID)</label>
+      <input type="text" name="username" id="username" value="{{ bloger.username }}" readonly>
+    </div>
+    {% if not signfound %}
+    <div class="field">
+      <label for="current_password">현재 비밀번호</label>
+      <input type="password" name="current_password" id="current_password" placeholder="현재 비밀번호">
+    </div>
+    {% endif %}
+    <div class="field">
+      <label for="new_password">새 비밀번호</label>
+      <input type="password" name="new_password" id="new_password" placeholder="새 비밀번호">
+    </div>
+    <div class="field">
+      <label for="re_new_password">새 비밀번호 확인</label>
+      <input type="password" name="re_new_password" id="re_new_password" placeholder="새 비밀번호 확인">
+    </div>
+    <div class="field">
+      <strong>{{ error }}</strong>
+    </div>
+    <button type="submit" class="ui primary button" name="Submit">정보 변경</button>
+    {% if not signfound %}
+    <a class="ui positive button" id="secsession">회원 탈퇴</a>
+    <a class="ui button" name="signup" href="/">메인페이지로</a>
+    {% endif %}
+  </form>
+</div>
+
+<div class="ui tiny modal">
+  <div class="header">회원탈퇴</div>
+  <div class="content">
+    <p>계정에 관한 정보 및 등록된 게시글과 댓글을 되돌릴 수 없습니다. <br />정말 탈퇴하시겠습니까?</p>
+  </div>
+  <div class="actions">
+    <button type="button" class="ui negative button">취소</button>
+    <a href="/update/secession"  class="ui positive right labeled icon button">
+      <i class="checkmark icon"></i>삭제
+    </a>
+  </div>
+</div>
+
+<script src="{% static 'js/update.js' %}"></script>
+{% endblock content %}

@@ -1,0 +1,32 @@
+{% extends 'layout/application.html' %}
+
+{% block content %}
+
+<div class="ui container segment">
+  <form class="ui form" method="POST" action="">
+    {% csrf_token %}
+    <div class="field">
+      <label for="name">이름</label>
+      <input type="text" name="name" id="name" placeholder="이름">
+    </div>
+    <div class="field">
+      <label for="username">사용자명(ID)</label>
+    {% if signfound %}
+      <input type="text" name="username" id="username" placeholder="사용자명" value="{{ signfound }}" readonly>
+    {% else %}
+      <input type="text" name="username" id="username" placeholder="사용자명">
+    {% endif %}
+    </div>
+    <div class="field">
+      <label for="email">이메일</label>
+      <input type="email" name="email" id="email" placeholder="이메일">
+    </div>
+    <div class="field">
+      <strong>{{ error }}</strong>
+    </div>
+    <button type="submit" class="ui primary button">확인</button>
+    <a class="ui button" onclick="history.back()">뒤로가기</a>
+  </form>
+</div>
+
+{% endblock content %}

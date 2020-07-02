@@ -1,0 +1,22 @@
+{% extends 'layout/application.html' %}
+
+{% block content %}
+
+<div class="ui centered container grid">
+  <div class="ui card">
+    <div class="content">
+      <div class="header">회원 정보</div>
+      <div class="ui divider"></div>
+      <div class="description center aligned">
+        <p>회원님의 아이디는 {{ signfound }}입니다.</p>
+        <div class="ui divider"></div>
+        <p>
+          <a class="ui tiny primary button" href="/signfind">비밀번호 찾기</a>
+          <a class="ui tiny positive button" href="/signin">로그인</a>
+        </p>
+      </div>
+    </div>
+  </div>
+</div>
+
+{% endblock content %}

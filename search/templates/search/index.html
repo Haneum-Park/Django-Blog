@@ -1,0 +1,27 @@
+{% extends 'layout/application.html' %}
+
+{% block content %}
+  <div class="ui floating message">{{ query }}</div>
+  {% if posts %}
+    <div class="ui segment">
+      <div class="ui divided items">
+        {% for post in posts %}
+          <div class="item">
+            <div class="content">
+              <a class="header" href="/{{ bloger.username }}/post/{{ post.category_id }}/{{ post.id }}">{{ post.title }}</a>
+              <div class="description"><p>{{ post.contents }}</p></div>
+              <div class="meta">
+                {{ post.created_at|date:'Y. m. d h시 i분' }}
+                <div class="ui right floated">
+                  조회 수 : {{ post.views }} | <i class="like icon"></i><span id="count-{{ post.id }}">{{ post.likes_user.all.count }}<span>
+                </div>
+              </div>
+            </div>
+          </div>
+        {% endfor %}
+      </div>
+    </div>
+  {% else %}
+    <div class="ui floating message">{{ message }}</div>
+  {% endif %}
+{% endblock content %}

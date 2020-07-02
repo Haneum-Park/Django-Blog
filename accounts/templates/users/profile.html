@@ -1,0 +1,41 @@
+{% extends 'layout/application.html' %}
+
+{% block content %}
+<link rel="stylesheet" type="text/css" href="/static/css/profile.css">
+<div class="ui container">
+  <form method="POST" action="" class="ui form" enctype="multipart/form-data">
+    {% csrf_token %}
+    <div class="field">
+      <label for="username">사용자명(ID)</label>
+      <input type="text" name="username" id="username" value="{{ bloger.username }}" readonly>
+    </div>
+    <div class="field">
+      <label for="name">이름</label>
+      <input type="text" name="name" id="name" value="{{ bloger.name }}" readonly>
+    </div>
+    <div class="field">
+      <label for="email">이메일</label>
+      <input type="email" name="email" id="email" value="{{ bloger.email }}" readonly>
+    </div>
+    <div class="field">
+      <label for="nickname">닉네임</label>
+      <input type="text" name="nickname" id="nickname" value="{{ bloger.nickname }}">
+    </div>
+    <div class="field">
+      <label for="introduce">자기소개</label>
+      <textarea name="introduce" id="introduce">{{ profile.introduce }}</textarea>
+    </div>
+    <div class="field">
+      <label for="profile">프로필 사진</label>
+      <input type="file" id="profile" name="profile" value="">
+      <img alt="" name="profile_img" id="profile_img" style="display: none;" />
+    </div>
+    <div class="field">
+      <strong>{{ error }}</strong>
+    </div>
+    <button type="submit" class="ui primary button" name="Submit">프로필 변경</button>
+    <a class="ui button" name="index" href="/index">메인페이지</a>
+  </form>
+</div>
+{% comment %} <script src="/static/js/profile.js"></script> {% endcomment %}
+{% endblock content %}

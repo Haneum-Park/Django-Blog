@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html>
+<head>
+  {% load static %}
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Document</title>
+  <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.4.1/semantic.min.css">
+  <link rel="stylesheet" type="text/css" href="{% static 'css/application.css' %}">
+  <script
+    src="https://code.jquery.com/jquery-3.1.1.min.js"
+    integrity="sha256-hVVnYaiADRTO2PzUGmuLJr8BLUSjGIZsDYGmIJLv2b8="
+    crossorigin="anonymous"></script>
+</head>
+<body>
+  <div class="ui container">
+    {% include 'shared/navbar.html' %}
+    {% if bloger %}
+      <div class="ui card profile">
+        <div class="image">
+          <img src="{{ profile.profile_img }}">
+        </div>
+        <div class="content">
+          <a class="header">{{ bloger.username }}<br />({{ bloger.nickname }})</a>
+          <div class="meta">
+            <span class="date">Joined in {{ bloger.created_at|date:"Y. m. d" }}</span>
+          </div>
+          <div class="description">{{ profile.introduce|linebreaksbr }}</div>
+        </div>
+        <div class="extra content">
+          <a><i class="envelope icon"></i> {{ mail|length}}</a> <!-- 메일 -->
+          <a href="/{{ bloger.username}}/notebox/index"><i class="comment icon"></i> {{ note|length }}</a> <!-- 쪽지 -->
+          <a id="user_following">
+            <span>팔로잉</span> 
+            <span class="count-following-{{ bloger.id }}">{{ bloger.following.all.count }}</span>
+          </a>
+          <div id="user_follower" class="user_follower_popup">
+            <span>팔로워</span>
+            <span class="count-follower-{{ bloger.id }}">{{ bloger.follower.all.count }}</span>
+          </div>
+          <a>
+            <i class="heart icon"></i> 
+            <span class="count-blog-likes-{{ bloger.id }}">{{ bloger.blog_likes.all.count }}</span>
+          </a>
+        </div>
+      </div>
+    {% endif %}
+    {% if blog_author %}
+      <div class="ui card profile blog_author">
+        <div class="image">
+          <img src="{{ profile.profile_img }}">
+        </div>
+        <div class="content">
+          <a class="header">{{ blog_author.username }}<br />({{ blog_author.nickname }})</a>
+          <div class="meta">
+            <span class="date">Joined in {{ blog_author.created_at|date:"h.m.d" }}</span>
+          </div>
+          <div class="description">{{ blog_author_profile.introduce|linebreaksbr }}</div>
+        </div>
+        <div class="extra content">
+          <a id="author_following">
+            <span>팔로잉</span>
+            <span class="count-following-{{ blog_author.id }}">{{ blog_author.following.all.count }}</span>
+          </a>
+          <a class="author_follower" name="{{ blog_author.id }}" data-follower="{{ bloger.id }}" style="background-color:unset; border:0; cursor:pointing;">
+            팔로워 
+            <span class="count-follower-{{ blog_author.id }}">{{ blog_author.follower.all.count }}</span>
+          </a>
+          <a id="author_blog_likes" name="{{ blog_author.id }}" data-blog-likes="{{ bloger.id }}">
+            <i class="heart icon"></i> 
+            <span class="count-blog-likes-{{ blog_author.id }}">{{ blog_author.blog_likes.all.count }}</span>
+          </a>
+        </div>
+      </div>
+    {% endif %}
+
+    {% block content %}
+    {% endblock content %}
+
+    {% include 'shared/footer.html' %}
+  </div>
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.4.1/semantic.min.js"></script>
+  <script src="{% static 'js/application.js' %}"></script>
+  <script type="text/javascript">
+    $(".author_follower").click(function() {
+      const blog_author_id = $(this).attr('name');
+      const bloger_id = $(this).attr('data-follower');
+      $.ajax({
+        type: 'POST',
+        url: '/{{ bloger.username }}/following',
+        data: { 'blog_author_id': blog_author_id, 'csrfmiddlewaretoken': '{{ csrf_token }}' },
+        dataType: 'json',
+        success: function (response) {
+          $(".count-follower-" + blog_author_id).html(response.following_count);
+          $(".count-following-" + bloger_id).html(response.follower_count);
+        },
+        error: function (request, status, error) {
+          alert(error);
+        },
+      })
+    })
+
+    $("#author_blog_likes").click(function() {
+      const blog_author_id = $(this).attr('name');
+
+      $.ajax({
+        type: 'POST',
+        url: '/{{ bloger.username }}/like',
+        data: { 'blog_author_id': blog_author_id, 'csrfmiddlewaretoken': '{{ csrf_token }}' },
+        dataType: 'json',
+        success: function(response) {
+          $(".count-blog-likes-" + blog_author_id).html(response.like_count);
+        },
+        error: function (request, status, error) {
+          alert(error);
+        }
+      })
+    })
+
+  </script>
+</body>
+</html>

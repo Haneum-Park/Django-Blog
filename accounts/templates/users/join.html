@@ -1,0 +1,36 @@
+{% extends 'layout/application.html' %}
+
+{% block content %}
+
+<div class="ui container">
+  <form method="POST" action="" class="ui form">
+    {% csrf_token %}
+    <div class="field">
+      <label for="name" >이름</label>
+      <input type="text" name="name" id="name" placeholder="이름">
+    </div>
+    <div class="field">
+      <label for="username" >사용자명(ID)</label>
+      <input type="text" name="username" id="username" placeholder="사용자명">
+    </div>
+    <div class="field">
+      <label for="password" >비밀번호</label>
+      <input type="password" name="password" id="password" placeholder="비밀번호">
+    </div>
+    <div class="field">
+      <label for="re-password" >비밀번호 확인</label>
+      <input type="password" name="re-password" id="re-password" placeholder="비밀번호 확인">
+    </div>
+    <div class="field">
+      <label for="email" >이메일</label>
+      <input type="email" name="email" id="email" placeholder="example@example.kr">
+    </div>
+    <div class="field">
+      <label for="nickname" >닉네임</label>
+      <input type="text" name="nickname" id="nickname" placeholder="닉네임">
+    </div>
+    <button type="submit" class="ui button" name="Submit">회원가입</button>
+  </form>
+</div>
+
+{% endblock content %}

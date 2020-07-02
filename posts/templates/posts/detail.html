@@ -1,0 +1,287 @@
+{% extends 'layout/application.html' %}
+{% block content %}
+  {% load static %}
+  <link rel="stylesheet" type="text/css" src="{% static '/css/detail.css' %}">
+  <input type="text" id="current_url" style="display: none;">
+  <div class="ui segment">
+    <div class="ui segment">
+      <div class="ui grid">
+        <div class="two column row">
+          <div class="left floated column">{{ post.title }}</div>
+          <div class="right floated column right aligned">
+            <div class="actions">
+              작성자 : 
+              <div class="ui dropdown">
+                <span>{{ post.author_id }}</span>
+                <div class="menu">
+                  <a class="item blog_location" href="/{{ post.author_id }}">블로그 이동</a>
+                  <a class="item email">메일 보내기</a>
+                  <a class="item author">쪽지 보내기</a>
+                </div>
+              </div> 
+              | 조회수 : {{ post.views }} | 
+              <button class="like" name="{{ post.id }}" style="background-color: unset;border: 0;">
+                <i class="heart icon link"></i>
+                <span id="count-{{ post.id }}">{{ post.likes_user.all.count }}</span>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="ui segment">
+      <div class="ui grid">
+        <div class="two column row">
+          <div class="column">
+            {{ post.contents|linebreaksbr }}
+          </div>
+        </div>
+        <div class="ui divider"></div>
+        <div class="two column row" style="padding-top:0; padding-bottom:0;">
+          <div class="left floated column">
+            {% for tag in post_tags %}
+              <a class="ui teal label" href="/posts/{{ tag }}/">
+                #{{ tag }}
+              </a>
+            {% endfor %}
+          </div>
+        </div>
+        <div class="two column row">
+          <div class="left floated column">글번호 : {{ post.id }} | 날짜 : {{ post.created_at|date:"Y.m.d h시 i분" }}</div>
+          <div class="right floated column right aligned">
+            <a class="url_copy">
+              <i class="share alternate icon link"></i>
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="ui segment">
+      <div class="ui comments">
+        <h3 class="ui dividing header">Comments</h3>
+        {% for parent_comment in comments %}
+          {% if not parent_comment.parent_id %}
+            <div class="comment">
+              <div class="content">
+                <a class="author" id="{{ parent_comment.id }}">{{ parent_comment.name }}</a>
+                <div class="metadata">
+                  <span class="date">{{ parent_comment.created_at|date:"Y.m.d h시 i분" }}</span>
+                  {% comment %} <a class="like"><i class="like icon"></i>4</a> {% endcomment %}
+                </div>
+                <div class="text">
+                  <p>{{ parent_comment.comment }}</p>
+                </div>
+                <div class="actions">
+                  <div class="comment_reply">Reply</div>
+                </div>
+              </div>
+              {% for comment in comments %}
+                {% if parent_comment.id == comment.parent_id %}
+                  <div class="comments">
+                    <div class="comment">
+                      <div class="content">
+                        <a class="author" id="{{ comment.parent_id }}">{{ comment.name }}</a>
+                        <div class="metadata">
+                          <span class="date">{{ comment.created_at|date:"Y.m.d h시 i분" }}</span>
+                        </div>
+                        <div class="text">{{ comment.comment }}</div>
+                      </div>
+                    </div>
+                  </div>
+                {% endif %}
+              {% endfor %}
+            </div>
+          {% endif %}
+        {% endfor %}
+        <form class="ui comment_reply form" method="POST" action="">
+          {% csrf_token %}
+          <div class="field ui mini input">
+            <input type="hidden" name="comment_id" value="{{ parent_comment.id }}">
+            <input type="text" class="" name="comment_in_comment" placeholder="댓글을 달아주세요~">
+          </div>
+          <button type="submit" class="mini ui blue submit icon button"><i class="icon edit"></i></button>
+        </form>
+        <div class="ui divider"></div>
+        <form class="ui reply form" method="POST" action="">
+          {% csrf_token %}
+          <div class="field">
+            <input type="text" name="comment" placeholder="댓글을 달아주세요~">
+          </div>
+          <button type="submit" class="ui blue labeled submit icon button">
+            <i class="icon edit"></i> Add Reply
+          </button>
+        </form>
+      </div>
+    </div>
+    {% if bloger.id == post.user_id and user %}
+      <div class="ui divider"></div>
+      <div class="ui grid">
+        <div class="column row">
+          <div class="column right aligned">
+            <a href="/{{ bloger.username }}/post/{{ post.category_id }}/{{ post.id }}/edit" class="ui primary button">글 수정</a>
+            <button type="button" class="ui button" id="delete">글 삭제</a>
+          </div>
+        </div>
+      </div>
+    {% endif %}
+  </div>
+  <!-- 게시글 삭제 -->
+  <div class="ui tiny modal">
+    <div class="header">글 삭제</div>
+    <div class="content">
+      <p>정말로 글을 삭제하시겠습니까?</p>
+    </div>
+    <div class="actions">
+      <button type="button" class="ui negative button">취소</button>
+      <a href="/{{ bloger.username }}/post/{{ post.category_id }}/{{ post.id }}/delete"  class="ui positive right labeled icon button">
+        <i class="checkmark icon"></i>삭제
+      </a>
+    </div>
+  </div>
+  <!-- 쪽지 전송 -->
+  <div class="ui small modal first coupled note">
+    <div class="header">쪽지 보내기</div>
+    <div class="content">
+      <div class="ui segment">
+        <div class="ui form">
+          <h4 class="ui dividing header">To. <span id="author" name="author">{{ blog_author.username }}</span></h4>
+          <div class="field">
+            <textarea rows="5" name="note" id="note" placeholder="Note"></textarea>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="actions">
+      <button type="button" class="ui negative button">취소</button>
+      <button type="button" class="ui positive right labeled icon button" id="note_send">
+        <i class="checkmark icon"></i>전송
+      </button>
+    </div>
+  </div>
+  <div class="ui small modal second coupled note">
+    <div class="header">쪽지 보내기</div>
+    <div class="content">
+      <div class="description">
+        <p class="send_message"></p>
+      </div>
+    </div>
+    <div class="actions">
+      <button class="ui approve button" type="button"><i class="checkmark icon"></i>확인</button>
+    </div>
+  </div>
+  <!-- 메일 전송 -->
+  <div class="ui small modal first coupled mail">
+    <div class="header">메일 보내기</div>
+    <div class="content">
+      <div class="ui segment">
+        <div class="ui form">
+          <h4 class="ui dividing header">
+            To. <span id="mail-to-author" name="mail-to-author">{{ blog_author.username }}</span>
+          </h4>
+          <div class="field">
+            <label for="subject">Subject</label>
+              <input type="text" name="subject" id="subject" placeholder="Subject">
+          </div>
+          <div class="field">
+            <label for="mail">message</label>
+            <textarea rows="5" name="mail" id="mail" placeholder="Message"></textarea>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="actions">
+      <button type="button" class="ui negative button">취소</button>
+      <button type="button" class="ui positive right labeled icon button" id="mail_send">
+        <i class="checkmark icon"></i>전송
+      </button>
+    </div>
+  </div>
+  <div class="ui small modal second coupled mail">
+    <div class="header">메일 보내기</div>
+    <div class="content">
+      <div class="description">
+        <div class="ui active inverted dimmer mail">
+          <div class="ui text loader">전송 중</div>
+        </div>
+        <p class="send_mail_message"></p>
+      </div>
+    </div>
+    <div class="actions">
+      <button class="ui approve button mail" type="button"><i class="checkmark icon"></i>확인</button>
+    </div>
+  </div>
+
+  <script src="{% static 'js/detail.js' %}"></script>
+  <script type="text/javascript">
+    let content;
+  
+    $('.like').click(function() {
+      const post_pk = $(this).attr('name')
+      $.ajax({
+        type: 'POST',
+        url: "/{{ bloger.username }}/post/{{ post.category_id }}/{{ post.id }}/like",
+        data: { 'post_pk': post_pk, 'csrfmiddlewaretoken': '{{ csrf_token }}' },
+        dataType: 'json',
+        success: function (response) {
+          // console.log(response.message)
+
+          $("#count-" + post_pk).html(response.likes_count);
+        },
+        error: function (request, status, error) {
+          // console.log("로그인필요");
+          alert(error)
+        },
+      })
+    });
+
+    $('#note_send').click(function() {
+      const author = $("#author").text();
+      let note = $('#note').val();
+      $.ajax({
+        type: 'POST',
+        url: "/posts/note",
+        data: { 'author': author, 'note': note, 'csrfmiddlewaretoken': '{{ csrf_token }}' },
+        dataType: 'json',
+        success: function (response) {
+          // console.log(response.message)
+          $('.send_message').text("전송이 완료되었습니다!");
+        },
+        error: function (request, status, error) {
+          // console.log("로그인필요");
+          $('.send_message').text("전송 실패!")
+        },
+      })
+    });
+
+    $('#mail_send').click(function() {
+      const mail_author = $("#mail-to-author").text();
+      let mail_subject = $("#subject").val();
+      let mail_content = $('#mail').val();
+
+      $.ajax({
+        type: 'POST',
+        url: "/posts/mail",
+        data: { 'mail_author': mail_author, 'mail_subject': mail_subject, 'mail_content': mail_content, 'csrfmiddlewaretoken': '{{ csrf_token }}' },
+        dataType: 'json',
+        success: function (response) {
+          // console.log(response.message)
+          $('.ui.active.inverted.dimmer.mail').css({'display': 'none'});
+          $('.send_mail_message').text("이메일 전송이 완료되었습니다!");
+        },
+        error: function (request, status, error) {
+          // console.log("로그인필요");
+          $('.send_mail_message').text("이메일 전송 실패!")
+        },
+      })
+    });
+
+    $('.ui.approve.button.mail').click(function() {
+      setTimeout(function() {
+        $('.ui.active.inverted.dimmer.mail').css({'display': 'flex'});
+        $('.send_mail_message, send_message').empty();
+      }, 1000);
+    })
+
+    
+  </script>
+{% endblock content %}

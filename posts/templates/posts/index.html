@@ -1,0 +1,132 @@
+{% extends 'layout/application.html' %}
+
+{% block content %}
+{% load static %}
+
+<div class="ui segment">
+  <div class="ui selection fluid dropdown">
+    <input type="hidden" name="user">
+    <i class="dropdown icon"></i>
+    <div class="text">카테고리</div>
+    <div class="menu">
+      {% if blog_author %}
+        <a href="/{{ blog_author.username }}" class="item">전체보기</a>
+      {% else %}
+        <a href="/{{ bloger.username }}" class="item">전체보기</a>
+      {% endif %}
+      {% for parent_category in categories %}
+        {% if not parent_category.parent_value_id %}
+          {% if blog_author %}
+            <a href="/{{ blog_author.username }}/sortPosts/{{ parent_category.value }}" class="item">{{ parent_category.name }}</a>
+          {% else %}
+            <a href="/{{ bloger.username }}/sortPosts/{{ parent_category.value }}" class="item">{{ parent_category.name }}</a>
+          {% endif %}
+        {% endif %}
+      {% endfor %}
+    </div>
+  </div>
+
+  {% comment %} <div class="ui styled fluid accordion">
+    <div class="title"><i class="dropdown icon"></i>카테고리</div>
+    <div class="content">
+      <div class="transition hidden ui list">
+        <div class="item">
+          <div class="list" style="padding-top: 0;">
+            {% for parent_category in categories %}
+              {% if not parent_category.parent_value_id %}
+                <div class="item">
+                  {% if blog_author %}
+                    <a href="/{{ blog_author.username }}/sortPosts/{{ parent_category.value }}">{{ parent_category.name }}</a>
+                  {% else %}
+                    <a href="/{{ bloger.username }}/sortPosts/{{ parent_category.value }}">{{ parent_category.name }}</a>
+                  {% endif %}
+                  {% for category in categories %}
+                    {% if category.parent_value_id == parent_category.value %}
+                      <div class="list">
+                        <div class="item">
+                          {% if blog_author %}
+                            <a href="/{{ blog_author.username }}/sortPosts/{{ category.value }}">{{ category.name }}</a>
+                          {% else %}
+                            <a href="/{{ bloger.username }}/sortPosts/{{ category.value }}">{{ category.name }}</a>
+                          {% endif %}
+                        </div>
+                      </div>
+                    {% endif %}
+                  {% endfor %}
+                </div>
+              {% endif %}
+            {% endfor %}
+          </div>
+        </div>
+      </div>
+    </div>
+  </div> {% endcomment %}
+  {% if current_categories %}
+    <div class="ui floating message">{{ current_categories.name }}</div>
+  {% endif %}
+  <div class="ui basic segment label">
+    총 {{posts.paginator.count}}개의 게시글이 존재합니다.
+  </div>
+  {% if posts %}
+    <div class="ui segment">
+      <div class="ui divided items">
+        {% for post in posts %}
+          <div class="item">
+            {% comment %} 
+            <div class="image">
+              <img src="/images/wireframe/image.png">
+            </div> 
+            {% endcomment %}
+            <div class="content">
+              {% if blog_author %}
+                <a class="header" href="/{{ blog_author.username }}/post/{{ post.category_id }}/{{ post.id }}/">
+              {% else %}
+                <a class="header" href="/{{ bloger.username }}/post/{{ post.category_id }}/{{ post.id }}/">
+              {% endif %}
+                {{ post.title }}
+              </a>
+              <div class="description">
+                <p>
+                  {{ post.summary }}
+                  {% if post.summary|length >= 100 %}
+                  ...
+                  {% endif %}
+                </p>
+              </div>
+              <div class="meta">
+                {{ post.created_at|date:'Y. m. d h시 i분' }}
+                <div class="ui right floated">
+                  조회 수 : {{ post.views }} | <i class="like icon"></i><span id="count-{{ post.id }}">{{ post.likes_user.all.count }}<span>
+                </div>
+              </div>
+            </div>
+          </div>
+        {% endfor %}
+      </div>
+    </div>
+    {% if posts.paginator %}
+      <div class="paginator">
+        <div class="ui pagination menu">
+          {% comment %} {% if posts.has_previous %}<a href="?page={{posts.previous_page_number}}" class="active item">
+          {% else %}<a class="disabled item">
+          {% endif %}
+            이전
+          </a> {% endcomment %}
+          {% for p in posts.paginator.page_range %}
+            <a href="?page={{forloop.counter}}" {% if p == posts.number %} class="active item" {% else %} class="item" {% endif %}>{{forloop.counter}}</a>
+          {% endfor %}
+          {% comment %} {% if posts.has_next %}<a href="?page={{posts.next_page_number}}" class="active item">
+          {% else %}<a class="disabled item">
+          {% endif %}
+            다음
+          </a> {% endcomment %}
+        </div>
+      </div>
+    {% endif %}
+  {% else %}
+    <div class="ui floating message">{{ message }}</div>
+  {% endif %}
+</div>
+<a class="ui primary button right floated" href="/{{ bloger.username }}/new">글쓰기</a>
+<script src="{% static 'js/posts.js' %}"></script>
+{% endblock content %}

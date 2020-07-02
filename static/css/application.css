@@ -1,0 +1,17 @@
+.ui.card.profile {
+  position: absolute;
+  left: 15px;
+  width: 250px;
+  top: 44px;
+}
+
+.like {
+  background-color: unset;
+  border: 0;
+}
+
+@media screen and (max-width: 960px) {
+  .ui.card.profile {
+    display: none;
+  }
+}

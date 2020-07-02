@@ -1,0 +1,11 @@
+.ui.comments { max-width: unset; }
+
+.like {
+  background-color: unset;
+  border: 0;
+}
+
+.ui.comment_reply.form {
+  padding: 1em 0 0 0.5em;
+  margin: 1em 0 0 1em;
+}

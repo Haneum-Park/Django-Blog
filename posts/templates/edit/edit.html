@@ -1,0 +1,46 @@
+{% extends 'layout/application.html' %}
+{% load static %}
+
+{% block content %}
+
+<link rel="stylesheet" type="text/css" src="{% static 'css/detail.css' %}">
+<div class="ui segment">
+  <form class="ui form" method="POST" action="" enctype="multipart/form-data">
+    {% csrf_token %}
+    <div class="ui grid">
+      <div class="row">
+        <div class="field column">
+          <label for="category">카테고리</label>
+          <div class="ui selection dropdown">
+            <input type="hidden" id="category" name="category" value="{{ current_category_value }}">
+            <i class="dropdown icon"></i>
+            <div class="text">{{ current_category_name }}</div>
+            <div class="menu">
+              {% for category in categories %}
+                {% if not category.parent_value_id %}
+                  <div class="item" data-value="{{ category.value }}">{{ category.name }}</div>
+                {% endif %}
+              {% endfor %}
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="field">
+      <label for="title">제목</label>
+      <input type="text" name="title" id="title" value="{{ post.title }}">
+    </div>
+    <div class="field">
+      <label for="contents">내용</label>
+      <textarea rows="15" name="contents" id="contents" value="{{ post.contents }}">{{ post.contents }}</textarea>
+    </div>
+    <div class="field">
+      <label for="tags">태그</label>
+      <input type="text" name="tags" id="tags" value="{{ post.tags }}">
+    </div>
+    <button type="submit" class="ui primary button">글 수정</button>
+    <a class="ui button" onclick="history.back()">뒤로가기</a>
+  </form>
+</div>
+
+{% endblock content %}

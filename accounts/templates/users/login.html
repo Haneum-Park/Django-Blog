@@ -1,0 +1,32 @@
+{% extends 'layout/application.html' %}
+
+{% block content %}
+  
+<div class="ui container">
+  <div class="ui floated message">
+    로그인을 하셔야 이용하실 수 있습니다.
+  </div>
+  <form method="POST" action="" class="ui form segment">
+    {% csrf_token %}
+    <div class="field">
+      <label for="username" >사용자명(ID)</label>
+      <input type="text" name="username" id="username" placeholder="사용자명">
+    </div>
+    <div class="field">
+      <label for="password" >비밀번호</label>
+      <input type="password" name="password" id="password" placeholder="비밀번호">
+    </div>
+    <div class="field">
+      <strong>{{ error }}</strong>
+    </div>
+    <button type="submit" class="ui primary button" name="Submit">로그인</button>
+    <a class="ui button" name="signup" href="/signup">회원가입</a>
+  </form>
+  <div class="ui tiny breadcrumb">
+    <a class="section" href="/signfind">아이디 찾기</a>
+    <div class="divider"> / </div>
+    <a class="section" href="/signfind">비밀번호 찾기</a>
+  </div>
+</div>
+
+{% endblock content %}

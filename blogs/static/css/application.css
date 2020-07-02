@@ -1,0 +1,71 @@
+/* Navbar */
+.ui.secondary.menu .actives.item {
+  background: rgba(0,0,0,.05);
+  color: rgba(0,0,0,.95);
+  border-radius: .28571429rem;
+}
+
+/* Paginator */
+.paginator { text-align: center; }
+/* end */
+
+/* Footer */
+.ui.footer {
+  width: 100%;
+  max-width: 1127px;
+}
+
+.ui.footer .footer {
+  padding: 10px;
+  margin-left: auto;
+  margin-right: auto;
+}
+/* end */
+
+.ui.basic.segment.label {
+  padding-left: 0;
+  padding-bottom: 0;
+  margin-bottom: 0;
+}
+
+.ui.secondary.menu { margin-top: 10px; }
+
+.ui.card.profile {
+  position: absolute;
+  left: 15px;
+  width: 250px;
+  top: 53px;
+}
+
+.ui.card.profile.blog_author {
+  position: absolute;
+  left: unset;
+  right: 15px;
+  width: 250px;
+  top: 53px;
+}
+
+.extra.content { text-align: center; }
+
+.extra.content .user_follower_popup { 
+  display: inline-block; 
+  cursor: pointer; 
+}
+
+.sixteen.wide.center { padding: 0; }
+
+input[type='search'],
+input[type='search']:focus {
+  width: 82% !important;
+}
+
+.ui.button.search { background-color: unset; }
+
+.like {
+  background-color: unset;
+  border: 0;
+}
+
+@media screen and (max-width: 960px) {
+  .ui.card.profile { display: none; }
+}

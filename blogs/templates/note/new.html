@@ -1,0 +1,33 @@
+{% extends 'layout/application.html' %}
+
+{% block content %}
+{% load static %}
+<div class="ui container">
+  <form method="POST" action="" class="ui form">
+    {% csrf_token %}
+    <div class="field">
+      <label for="to"></label>
+      <input type="text" name="to_user_id" id="to" placeholder="받는사람의 아이디를 입력해주세요.">
+    </div>
+    {% comment %} 
+    <div class="field">
+      <select class="ui fluid search dropdown" multiple="">
+        <option value="">받는 사람의 아이디를 입력해주세요.</option>
+        {% for user in blogers %}
+          {% if user.username != bloger.username %}
+            <option value="{{ user.id }}">{{ user.username }}</option>
+          {% endif %}
+        {% endfor %}
+      </select>
+    </div> 
+    {% endcomment %}
+    <div class="field">
+      <label for="note"></label>
+      <textarea rows="10" name="note" id="note" placeholder="내용"></textarea>
+    </div>
+    <button type="submit" class="ui primary button" name="submit">전송</button>
+    <a class="ui button" onclick="history.back()">취소</a>
+  </form>
+</div>
+<script src="{% static '/js/note.js' %}"></script>
+{% endblock content %}

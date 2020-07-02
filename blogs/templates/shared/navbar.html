@@ -1,0 +1,62 @@
+<div class="ui secondary menu">
+
+  {% if request.path == '/index' %}
+    <a class="item active" href="/index">Home</a>
+    <a class="item" href="/{{ bloger.username }}/">블로그</a>
+    <a class="item" href="/{{ bloger.username}}/notebox/index">쪽지함</a>
+  {% elif bloger.username in request.path or blog_author.username in request.path or 'posts' in request.path or 'search' in request.path %}
+    <a class="item" href="/index">Home</a>
+    {% if 'notebox' in request.path %}
+      <a class="item" href="/{{ bloger.username }}/">블로그</a>
+      <div class="ui item actives dropdown link">
+        <span>쪽지함</span>
+        <div class="menu">
+          <a class="item" href="/{{ bloger.username }}/notebox/index">받은 쪽지함</a>
+          <a class="item" href="/{{ bloger.username }}/notebox/index/new">쪽지 보내기</a>
+        </div>
+      </div>
+    {% else %}
+      <a class="item active" href="/{{ bloger.username }}/">블로그</a>
+      <a class="item" href="/{{ bloger.username}}/notebox/index">쪽지함</a>
+    {% endif %}
+  {% endif %}
+  <div class="right menu">
+    {% if bloger.username in request.path %}
+      <form class="ui form" method="GET" action="/search/result/{{ bloger.username }}">
+    {% else %}
+      <form class="ui form" method="GET" action="{% url 'search:searchResult' %}">
+    {% endif %}
+      <div class="item">
+          <div class="ui left transparent action input">
+            {% if bloger.username in request.path %}
+              <button type="submit" class="ui icon button search">
+                <i class="search link icon"></i>
+              </button>
+              <input type="search" class="ui search" placeholder="내 블로그에서 검색" name="mq" style="border-color: rgba(0, 0, 0, 0) !important;">
+            {% elif not bloger %}
+            {% else %}
+              <button type="submit" class="ui icon button search">
+                <i class="search link icon"></i>
+              </button>
+              <input type="search" class="ui search" placeholder="검색" name="q" style="border-color: rgba(0, 0, 0, 0) !important;">
+            {% endif %}
+          </div>
+      </div>
+    </form>
+    {% if not bloger %}
+      <a class="ui item" href="/signin">Sign in</a>
+      <a class="ui item" href="/signup">Sign up</a>
+    {% else %}
+      <div class="ui item dropdown link">
+        <span class="text">{{ bloger.name }}님, 안녕하세요!</span>
+        <i class="dropdown icon"></i>
+        <div class="menu">
+          <a class="item" href="/{{ bloger.username }}/">내 블로그 가기</a>
+          <a class="item" href="/update">회원정보 수정</a>
+          <a class="item" href="/profile">프로필 수정</a>
+          <a class="item" href="/signout">로그아웃</a>
+        </div>
+      </div>
+    {% endif %}
+  </div>
+</div>
