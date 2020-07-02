@@ -78,19 +78,19 @@ WSGI_APPLICATION = 'blog.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/3.0/ref/settings/#databases
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'blog',
-        'USER': 'root',
-        'PASSWORD': 'Apap6411919!!##djvmfflzpdltus!',
-        'HOST': 'localhost',
-        'PORT': '3306',
-        'OPTIONS': {
-            'init_command': 'SET sql_mode="STRICT_TRANS_TABLES"'
-        }
-    }
-}
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.mysql',
+#         'NAME': 'blog',
+#         'USER': 'root',
+#         'PASSWORD': 'Apap6411919!!##djvmfflzpdltus!',
+#         'HOST': 'localhost',
+#         'PORT': '3306',
+#         'OPTIONS': {
+#             'init_command': 'SET sql_mode="STRICT_TRANS_TABLES"'
+#         }
+#     }
+# }
 
 
 # Password validation
@@ -115,9 +115,9 @@ AUTH_PASSWORD_VALIDATORS = [
 # Internationalization
 # https://docs.djangoproject.com/en/3.0/topics/i18n/
 
-LANGUAGE_CODE = 'en-us'
+LANGUAGE_CODE = 'en-us' # If you want Korean, change the LANGUAGE_CODE to ko-kr 
 
-TIME_ZONE = 'Asia/Seoul' # 서울
+TIME_ZONE = 'Asia/Seoul' # Koera Seoul
 
 USE_I18N = True
 
@@ -150,10 +150,10 @@ EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_PORT = '587'
 
 # Sender email
-EMAIL_HOST_USER = 'qkrgksdma17@gmail.com'
+# EMAIL_HOST_USER
 
 # Sender password
-EMAIL_HOST_PASSWORD = 'Apap6411919!!##'
+# EMAIL_HOST_PASSWORD
 
 # TLS security method
 EMAIL_USE_TLS = True
